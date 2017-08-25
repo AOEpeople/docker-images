@@ -1,0 +1,13 @@
+# Create a mysqldump and stores it to S3
+
+Required environment variables:
+
+- AWS_ACCESS_KEY_ID
+- AWS_SECRET_ACCESS_KEY
+- AWS_DEFAULT_REGION
+- S3_BUCKET
+- S3_PREFIX
+- DBHOST
+- DBNAME
+- DBUSER
+- DBPASSWORD
