@@ -7,6 +7,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     pip install awscli && \
+    rm -rf /tmp/pip_build_root && \
     aws --version && \
     chmod +x /usr/local/bin/*
 
