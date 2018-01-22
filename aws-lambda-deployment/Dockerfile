@@ -10,5 +10,3 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     rm -rf /tmp/pip_build_root && \
     aws --version && \
     chmod +x /usr/local/bin/*
-
-CMD ["deploy_lambda.sh"]
