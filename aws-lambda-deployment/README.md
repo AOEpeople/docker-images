@@ -13,12 +13,13 @@ This requires an existing Lambda artifact as a jar or zip package which is acces
 
 ```
 docker run --rm -i \
+  -e STAGE_NAME="latest" \
   -e VERSION_NUMBER="1.2.3" \
   -e ARTIFACT_URL="https://domain.com/artifactory/.../###VERSION_NUMBER###/name-###VERSION_NUMBER###.jar" \
-  -e AWS_BUCKET_NAME="bucket_name" \
+  -e AWS_BUCKET_NAME="bucket_name_###STAGE_NAME###" \
   -e AWS_REGION="eu-west-1" \
   -e AWS_LAMBDA_ARTIFACT_NAME="name-###VERSION_NUMBER###.jar" \
-  -e AWS_LAMBDA_FUNCTION="lambda_function_name" \
+  -e AWS_LAMBDA_FUNCTION="lambda_function_name_###STAGE_NAME###" \
   -e DEBUG=1 \
   aoepeople/aws-lambda-deployment:0.1 /bin/bash -c "/usr/local/bin/updateFunctionCode.sh"
 ```
