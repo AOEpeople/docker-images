@@ -59,7 +59,8 @@ s3:PutObject
   "Statement": [
     {
       "Action": [
-        "s3:PutObject"
+        "s3:PutObject",
+        "s3:GetObject",
       ],
       "Effect": "Allow",
       "Resource": "arn:aws:s3:::<bucket_name>/<key_name>",

@@ -43,6 +43,11 @@ if [ "${DEBUG}" == "1" ]; then
     echo 
 fi 
 
+if [ "${DEBUG}" == "1" ]; then echo ">> curl ${CURL_CREDENTIALS} -O ${ARTIFACT_URL}"; fi
 curl $CURL_CREDENTIALS -O $ARTIFACT_URL || error_exit "Failed to download lambda artifact (${ARTIFACT_URL})"
+
+if [ "${DEBUG}" == "1" ]; then echo ">> aws s3 cp ${AWS_LAMBDA_ARTIFACT_NAME} s3://${AWS_BUCKET_NAME}/${AWS_LAMBDA_ARTIFACT_NAME}"; fi
 aws s3 cp $AWS_LAMBDA_ARTIFACT_NAME s3://$AWS_BUCKET_NAME/$AWS_LAMBDA_ARTIFACT_NAME || error_exit "Failed to upload ${AWS_LAMBDA_ARTIFACT_NAME} to s3 bucket ${AWS_BUCKET_NAME}"
-aws --region $AWS_REGION lambda update-function-code --function-name $AWS_LAMBDA_FUNCTION --s3-key $AWS_LAMBDA_ARTIFACT_NAME --s3-bucket $AWS_BUCKET_NAME || error_exit "Failed to update lambda function"
+
+if [ "${DEBUG}" == "1" ]; then echo ">> aws --region ${AWS_REGION} lambda update-function-code --function-name ${AWS_LAMBDA_FUNCTION} --s3-key ${AWS_LAMBDA_ARTIFACT_NAME} --s3-bucket ${AWS_BUCKET_NAME}"; fi
+aws --region "${AWS_REGION}" lambda update-function-code --function-name "${AWS_LAMBDA_FUNCTION}" --s3-key "${AWS_LAMBDA_ARTIFACT_NAME}" --s3-bucket "${AWS_BUCKET_NAME}" || error_exit "Failed to update lambda function"
