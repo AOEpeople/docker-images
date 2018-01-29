@@ -8,9 +8,10 @@
 
 Job: `s3_objects`
 Metrics: 
-`s3_key_age{bucket="<AWS_BUCKET_NAME>", key="<KEY>"} <AGE_IN_SECONDS>`
-`s3_key_size{bucket="<AWS_BUCKET_NAME>", key="<KEY>"} <OBJECT_SIZE_IN_BYTES>`
-
+```
+s3_key_age{bucket="<AWS_BUCKET_NAME>", key="<KEY>"} <AGE_IN_SECONDS>
+s3_key_size{bucket="<AWS_BUCKET_NAME>", key="<KEY>"} <OBJECT_SIZE_IN_BYTES>
+```
 
 **Example command:**
 
