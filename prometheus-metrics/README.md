@@ -23,6 +23,27 @@ docker run --rm -i \
   -e AWS_ACCESS_KEY_ID="XYZ" \
   -e AWS_SECRET_ACCESS_KEY="XXYYZZ" \
   -e AWS_BUCKET_NAME="backup.om3.cloud" \
-  -e AWS_REGION="eu-central-1" \
+  -e AWS_DEFAULT_REGION="eu-central-1" \
   aoepeople/prometheus-metrics:0.1 /bin/bash -c "/usr/local/bin/aws-s3.sh"
+```
+
+
+### Required persmissions
+
+```
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:ListObjects"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::<bucket_name>/<key_name>",
+      "Principal": "*"
+    }
+  ]
+}
 ```
