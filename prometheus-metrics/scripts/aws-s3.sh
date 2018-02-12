@@ -1,5 +1,12 @@
 #!/bin/bash -e
 
+#
+# Example
+# docker run -d -p 9091:9091 prom/pushgateway
+# docker run --rm -i -e DEBUG=1 -e PROM_PUSHGATEWAY_URL="http://127.0.0.1" -e AWS_ACCESS_KEY_ID="xxx" -e AWS_SECRET_ACCESS_KEY="xxx" -e AWS_BUCKET_NAME="backup.om3.cloud" -e AWS_DEFAULT_REGION="eu-central-1" aoepeople/prometheus-metrics:0.4 /bin/bash -c "/usr/local/bin/aws-s3.sh"
+#
+
+
 function echoerr {
     echo_red "============================================" 1>&2;
     echo_red "ERROR: $@" 1>&2;
@@ -34,8 +41,14 @@ if [ "${DEBUG}" == "1" ]; then
     echo 
 fi 
 
-echo "> aws --region \"${AWS_DEFAULT_REGION}\" s3 ls s3://\"${AWS_BUCKET_NAME}${AWS_BUCKET_PATH}\" --recursive | sort | tail -n 1 | awk '{print $4}'"
-s3list=`aws --region "${AWS_DEFAULT_REGION}" s3 ls s3://"${AWS_BUCKET_NAME}${AWS_BUCKET_PATH}" --recursive | sort | tail -n 1 | awk '{print $4}'` || error_exit "Failed list bucket"
+if [ "${PROCCESS_ONLY_LATEST_OBJECT_IN_PATH}" == "1" ] ; then 
+    echo "> aws --region \"${AWS_DEFAULT_REGION}\" s3 ls s3://\"${AWS_BUCKET_NAME}${AWS_BUCKET_PATH}\" --recursive | sort | tail -n 1 | awk '{print $4}'"
+    s3list=`aws --region "${AWS_DEFAULT_REGION}" s3 ls s3://"${AWS_BUCKET_NAME}${AWS_BUCKET_PATH}" --recursive | sort | tail -n 1 | awk '{print $4}'` || error_exit "Failed list bucket"
+else 
+    echo "> aws --region \"${AWS_DEFAULT_REGION}\" s3 ls s3://\"${AWS_BUCKET_NAME}${AWS_BUCKET_PATH}\" --recursive | sort | awk '{print $4}'"
+    s3list=`aws --region "${AWS_DEFAULT_REGION}" s3 ls s3://"${AWS_BUCKET_NAME}${AWS_BUCKET_PATH}" --recursive | sort | awk '{print $4}'` || error_exit "Failed list bucket"
+fi
+
 for key in $s3list
 do
     if [ "${DEBUG}" == "1" ]; then
@@ -55,7 +68,7 @@ do
         echo ">> AGE: ${AGE} (seconds)"
     fi
 
-    
+
     cat <<EOF | curl --data-binary @- ${COMPLETE_PROM_PUSHGATEWAY_URL}
 s3_key_age{bucket="${AWS_BUCKET_NAME}", key="${key}"} ${AGE}
 s3_key_size{bucket="${AWS_BUCKET_NAME}", key="${key}"} ${OBJECT_SIZE}
