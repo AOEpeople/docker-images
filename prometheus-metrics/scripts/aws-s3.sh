@@ -69,9 +69,9 @@ do
     fi
 
 
-    cat <<EOF | curl --data-binary @- ${COMPLETE_PROM_PUSHGATEWAY_URL}
-s3_key_age{bucket="${AWS_BUCKET_NAME}", key="${key}"} ${AGE}
-s3_key_size{bucket="${AWS_BUCKET_NAME}", key="${key}"} ${OBJECT_SIZE}
+    cat <<EOF | curl --data-binary @- ${COMPLETE_PROM_PUSHGATEWAY_URL}/key/${key}
+s3_key_age{bucket="${AWS_BUCKET_NAME}"} ${AGE}
+s3_key_size{bucket="${AWS_BUCKET_NAME}"} ${OBJECT_SIZE}
 EOF
 
 echo "Done"
