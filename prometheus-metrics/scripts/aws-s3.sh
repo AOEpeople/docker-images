@@ -51,9 +51,13 @@ fi
 
 for key in $s3list
 do
+   label=`echo ${key//\//_}`
+   label=`echo ${key//./_}`
+
     if [ "${DEBUG}" == "1" ]; then
         echo 
         echo ">> KEY: ${key}" 
+        echo ">> LABEL: ${label}" 
     fi
 
     OBJECT_META_DATA=$(aws --region "${AWS_DEFAULT_REGION}" s3api head-object --bucket "${AWS_BUCKET_NAME}" --key "${key}") || error_exit "Failed fetch object head"
@@ -69,7 +73,7 @@ do
     fi
 
 
-    cat <<EOF | curl --data-binary @- ${COMPLETE_PROM_PUSHGATEWAY_URL}/key/${key}
+    cat <<EOF | curl --data-binary @- ${COMPLETE_PROM_PUSHGATEWAY_URL}/key/${label}
 s3_key_age{bucket="${AWS_BUCKET_NAME}"} ${AGE}
 s3_key_size{bucket="${AWS_BUCKET_NAME}"} ${OBJECT_SIZE}
 EOF
