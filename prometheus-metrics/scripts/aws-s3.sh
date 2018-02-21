@@ -52,7 +52,7 @@ fi
 for key in $s3list
 do
    label=`echo ${key//\//_}`
-   label=`echo ${key//./_}`
+   label=`echo ${label//./_}`
 
     if [ "${DEBUG}" == "1" ]; then
         echo 
