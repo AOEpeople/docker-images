@@ -15,23 +15,27 @@ for URL in $URLS; do
 
 # Output format
 read -r -d '' OUTPUT << EOM
-curl_time_namelookup{url=$URL} %{time_namelookup}
-curl_time_connect{url=$URL} %{time_connect}
-curl_time_appconnect{url=$URL} %{time_appconnect}
-curl_time_namelookup{url=$URL} %{time_namelookup}
-curl_time_namelookup{url=$URL} %{time_namelookup}
-curl_time_total{url=$URL} %{time_total}
-curl_http_code{url=$URL} %{http_code}
+curl_time_namelookup{url="$URL"} %{time_namelookup}
+curl_time_connect{url="$URL"} %{time_connect}
+curl_time_appconnect{url="$URL"} %{time_appconnect}
+curl_time_namelookup{url="$URL"} %{time_namelookup}
+curl_time_namelookup{url="$URL"} %{time_namelookup}
+curl_time_total{url="$URL"} %{time_total}
+curl_http_code{url="$URL"} %{http_code}
 EOM
 
 # do the curl call
+echo "Curl: $URL"
 curl -s -w "$OUTPUT\n" -o /dev/null -s $URL > $TMPDIR/$COUNTER.metrics
 
 let COUNTER++
 done
 
 # debug output
+echo "Metrics:"
 cat $TMPDIR/*.metrics
 
 # push all metrics to push gateway
-cat $TMPDIR/*.metrics | curl -s --data-binary @- "$PUSH_DESTINATION"
+echo ""
+echo "Pushing metrics to $PUSH_DESTINATION"
+cat $TMPDIR/*.metrics | curl --data-binary @- "$PUSH_DESTINATION"
