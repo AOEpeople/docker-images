@@ -26,7 +26,10 @@ EOM
 
 # do the curl call
 echo "Curl: $URL"
-curl -s -w "$OUTPUT\n" -o /dev/null -s $URL > $TMPDIR/$COUNTER.metrics
+curl --max-time 30 \
+    --silent \
+    --write-out "$OUTPUT\n" --output /dev/null \
+    $URL > $TMPDIR/$COUNTER.metrics
 
 let COUNTER++
 done
