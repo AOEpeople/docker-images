@@ -7,7 +7,7 @@ from requests_aws4auth import AWS4Auth
 
 command = sys.argv[1]
 esHost = os.getenv('ELASTICSEARCH_HOST', 'localhost:9200')
-bucketName = os.getenv('S3_BUCKET', 'my-bucket')
+bucketName = os.environ('S3_BUCKET')
 roleArn = os.getenv('ROLE_ARN', '')
 indices = os.getenv('INDICES', '*')
 region = os.getenv('REGION', 'us-west-1')
@@ -46,7 +46,7 @@ else:
     print("Snapshot repository " + bucketName + " already exists")
 
 if command == "create":
-    snapshotName = 'snapshot-' + datetime.datetime.today().strftime('%Y-%m-%d')
+    snapshotName = 'snapshot-' + datetime.datetime.today().strftime('%Y-%m-%d-%H-%M')
     print("Creating snapshot " + snapshotName)
     path = '_snapshot/' + bucketName + '/' + snapshotName
     url = host + path
