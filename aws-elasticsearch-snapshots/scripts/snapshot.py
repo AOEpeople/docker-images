@@ -7,7 +7,7 @@ from requests_aws4auth import AWS4Auth
 
 command = sys.argv[1]
 esHost = os.getenv('ELASTICSEARCH_HOST', 'localhost:9200')
-bucketName = os.environ('S3_BUCKET')
+bucketName = os.environ['S3_BUCKET']
 roleArn = os.getenv('ROLE_ARN', '')
 indices = os.getenv('INDICES', '*')
 region = os.getenv('REGION', 'us-west-1')
