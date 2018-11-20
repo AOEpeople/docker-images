@@ -60,7 +60,11 @@ elif command == "restore":
     path = '_snapshot/' + bucketName + '/' + snapshotName + '/_restore'
     url = host + path
 
-    payload = {"indices": indices}
+    payload = {
+        "indices": indices,
+        "rename_pattern": "(.+)",
+        "rename_replacement": "$1_restored"
+    }
 
     r = requests.post(url, auth=awsAuth, json=payload, headers=headers)
 
