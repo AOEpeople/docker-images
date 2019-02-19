@@ -13,6 +13,11 @@ COUNTER=0
 
 for URL in $URLS; do
 
+if [[ "$URL" != http* ]] ; then
+    echo "Skipping $URL because it doesn't start with http"
+    continue
+fi
+
 # Output format
 read -r -d '' OUTPUT << EOM
 curl_time_namelookup{url="$URL",code="%{http_code}"} %{time_namelookup}
