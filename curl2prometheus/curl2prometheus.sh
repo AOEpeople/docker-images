@@ -15,12 +15,12 @@ for URL in $URLS; do
 
 # Output format
 read -r -d '' OUTPUT << EOM
-curl_time_namelookup{url="$URL"} %{time_namelookup}
-curl_time_connect{url="$URL"} %{time_connect}
-curl_time_appconnect{url="$URL"} %{time_appconnect}
-curl_time_namelookup{url="$URL"} %{time_namelookup}
-curl_time_namelookup{url="$URL"} %{time_namelookup}
-curl_time_total{url="$URL"} %{time_total}
+curl_time_namelookup{url="$URL",code="%{http_code}"} %{time_namelookup}
+curl_time_connect{url="$URL",code="%{http_code}"} %{time_connect}
+curl_time_appconnect{url="$URL",code="%{http_code}"} %{time_appconnect}
+curl_time_namelookup{url="$URL",code="%{http_code}"} %{time_namelookup}
+curl_time_namelookup{url="$URL",code="%{http_code}"} %{time_namelookup}
+curl_time_total{url="$URL",code="%{http_code}"} %{time_total}
 curl_http_code{url="$URL"} %{http_code}
 EOM
 
