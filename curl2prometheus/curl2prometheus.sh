@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
- URLS="http://www.google.de http://www.facebook.com http://ssdsdsdsd|type=internal,group=healthcheck"
- PUSH_DESTINATION="http://pushgateway.example.org:9091/metrics/job/curl"
+# URLS="http://www.google.de http://www.facebook.com http://ssdsdsdsd|type=internal,group=healthcheck"
+# PUSH_DESTINATION="http://pushgateway.example.org:9091/metrics/job/curl"
 
 if [ -z "$URLS" ] ; then echo "No URLS given"; exit 1; fi
 if [ -z "$PUSH_DESTINATION" ] ; then echo "No PUSH_DESTINATION given"; exit 1; fi
