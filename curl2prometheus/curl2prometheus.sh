@@ -41,11 +41,11 @@ curl_http_code{${ADDITIONAL_ATTRIBUTES}url="${URL}"} %{http_code}
 EOM
 
 # do the curl call
-echo "Curl: $DEFINITION"
+echo "Curl: ${URL}"
 curl --max-time 30 \
     --silent \
     --write-out "$OUTPUT\n" --output /dev/null \
-    $DEFINITION > $TMPDIR/$COUNTER.metrics
+    ${URL} > $TMPDIR/$COUNTER.metrics
 
 let COUNTER++
 done
