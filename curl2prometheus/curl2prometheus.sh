@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# URLS="http://www.google.de http://www.facebook.com http://ssdsdsdsd"
-# PUSH_DESTINATION="http://pushgateway.example.org:9091/metrics/job/curl"
+ URLS="http://www.google.de http://www.facebook.com http://ssdsdsdsd|type=internal,group=healthcheck"
+ PUSH_DESTINATION="http://pushgateway.example.org:9091/metrics/job/curl"
 
 if [ -z "$URLS" ] ; then echo "No URLS given"; exit 1; fi
 if [ -z "$PUSH_DESTINATION" ] ; then echo "No PUSH_DESTINATION given"; exit 1; fi
@@ -11,30 +11,41 @@ trap "rm -rf ${TMPDIR}" EXIT
 
 COUNTER=0
 
-for URL in $URLS; do
+for DEFINITION in $URLS; do
 
-if [[ "$URL" != http* ]] ; then
-    echo "Skipping $URL because it doesn't start with http"
+if [[ "$DEFINITION" != http* ]] ; then
+    echo "Skipping $DEFINITION because it doesn't start with http"
     continue
+fi
+
+IFS='|' read -a PIECES <<< "${DEFINITION}"
+URL=${PIECES[0]}
+
+# parse additional attributes
+ADDITIONAL_ATTRIBUTES=${PIECES[1]}
+ADDITIONAL_ATTRIBUTES=${ADDITIONAL_ATTRIBUTES%,}
+ADDITIONAL_ATTRIBUTES=${ADDITIONAL_ATTRIBUTES#,}
+if [ ! -z "${ADDITIONAL_ATTRIBUTES}" ] ; then
+    ADDITIONAL_ATTRIBUTES="${ADDITIONAL_ATTRIBUTES},"
 fi
 
 # Output format
 read -r -d '' OUTPUT << EOM
-curl_time_namelookup{url="$URL",code="%{http_code}"} %{time_namelookup}
-curl_time_connect{url="$URL",code="%{http_code}"} %{time_connect}
-curl_time_appconnect{url="$URL",code="%{http_code}"} %{time_appconnect}
-curl_time_namelookup{url="$URL",code="%{http_code}"} %{time_namelookup}
-curl_time_namelookup{url="$URL",code="%{http_code}"} %{time_namelookup}
-curl_time_total{url="$URL",code="%{http_code}"} %{time_total}
-curl_http_code{url="$URL"} %{http_code}
+curl_time_namelookup{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_namelookup}
+curl_time_connect{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_connect}
+curl_time_appconnect{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_appconnect}
+curl_time_namelookup{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_namelookup}
+curl_time_namelookup{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_namelookup}
+curl_time_total{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_total}
+curl_http_code{${ADDITIONAL_ATTRIBUTES}url="${URL}"} %{http_code}
 EOM
 
 # do the curl call
-echo "Curl: $URL"
+echo "Curl: $DEFINITION"
 curl --max-time 30 \
     --silent \
     --write-out "$OUTPUT\n" --output /dev/null \
-    $URL > $TMPDIR/$COUNTER.metrics
+    $DEFINITION > $TMPDIR/$COUNTER.metrics
 
 let COUNTER++
 done
