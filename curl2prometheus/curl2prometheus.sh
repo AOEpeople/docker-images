@@ -35,7 +35,8 @@ curl_time_namelookup{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %
 curl_time_connect{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_connect}
 curl_time_appconnect{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_appconnect}
 curl_time_namelookup{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_namelookup}
-curl_time_namelookup{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_namelookup}
+time_pretransfer{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_pretransfer}
+time_starttransfer{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_starttransfer}
 curl_time_total{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_total}
 curl_http_code{${ADDITIONAL_ATTRIBUTES}url="${URL}"} %{http_code}
 EOM
