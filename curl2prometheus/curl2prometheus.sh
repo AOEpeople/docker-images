@@ -46,10 +46,12 @@ echo "Curl: ${URL}"
 curl --max-time 30 \
     --silent \
     --write-out "$OUTPUT\n" --output /dev/null \
-    ${URL} > $TMPDIR/$COUNTER.metrics
+    ${URL} > $TMPDIR/$COUNTER.metrics &
 
 let COUNTER++
 done
+
+wait
 
 # debug output
 echo "Metrics:"
