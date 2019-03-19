@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+env
+set -x
+
 SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 color_normal="\033[0m"; color_red="\033[0;31m"; color_green="\033[0;32m"; color_yellow="\033[0;34m";
@@ -16,8 +19,8 @@ if [ -z "${AWS_DEFAULT_REGION}" ] ; then error_exit "AWS_DEFAULT_REGION not set"
 TMPDIR=$(mktemp -d)
 trap "rm -rf ${TMPDIR}" EXIT
 
-CERTIFICATES=$(aws --region "${AWS_DEFAULT_REGION}" acm list-certificates --certificate-statuses ISSUED | jq '.CertificateSummaryList') || error_exit "Failed to get certificates"
-for CERTIFICATE in $(echo "${CERTIFICATES}" | jq -r '.[] | @base64'); do
+CERTIFICATES=$(aws --region "${AWS_DEFAULT_REGION}" acm list-certificates --certificate-statuses ISSUED) || error_exit "Failed to get certificates"
+for CERTIFICATE in $(echo "${CERTIFICATES}"  | jq -r '.CertificateSummaryList[] | @base64'); do
     _jq() {
         echo ${CERTIFICATE} | base64 --decode | jq -r ${1} || error_exit "Failed to decode jq result"
     }

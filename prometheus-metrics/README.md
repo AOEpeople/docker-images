@@ -19,10 +19,14 @@ aws_acm_ssl_certificate_expiration{domain="${DOMAIN}", renewal_eligibility="${RE
 **Example command within kubernetes cluster:**
 
 ```
-vuku <CLUSTER> run check-acm-certificates --rm -it \
-    --env PROM_PUSHGATEWAY_URL="http://infrastructure-prometheus-pushgateway" \
+vuku k run check-acm-certificates --rm -it \
+    --env PROM_PUSHGATEWAY_URL="http://prometheus-pushgateway.k28s-infrastructure" \
     --env AWS_DEFAULT_REGION="eu-central-1" \
-    --image=aoepeople/prometheus-metrics:latest /bin/bash -c "/usr/local/bin/check_acm_certificates.sh"
+    --image=aoepeople/prometheus-metrics:latest -- /bin/bash -c "/usr/local/bin/check_acm_certificates.sh"
+vuku k run check-acm-certificates --rm -it \
+    --env PROM_PUSHGATEWAY_URL="http://prometheus-pushgateway.k28s-infrastructure" \
+    --env AWS_DEFAULT_REGION="eu-central-1" \
+    --image=aoepeople/prometheus-metrics:latest -- /bin/bash 
 ```
 
 **Example command within localhost:**
