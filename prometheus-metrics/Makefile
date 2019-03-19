@@ -1,9 +1,12 @@
-.PHONY: docker
+VERSION=$(shell git describe --tags --always --dirty --abbrev=3)
+REPO=aoepeople/prometheus-metrics
 
-build: Dockerfile
-	docker build -t aoepeople/prometheus-metrics:0.7 .
-	docker tag aoepeople/prometheus-metrics:0.7 aoepeople/prometheus-metrics:latest
+.PHONY: build push
+
+build:
+	docker build -t "${REPO}:${VERSION}" .
+	docker tag ${REPO}:${VERSION} ${REPO}:latest
 
 push: build
-	docker push aoepeople/prometheus-metrics:0.7
-	docker push aoepeople/prometheus-metrics:latest
+	docker push ${REPO}:${VERSION}
+	docker push ${REPO}:latest
