@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-env
-set -x
-
 SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 color_normal="\033[0m"; color_red="\033[0;31m"; color_green="\033[0;32m"; color_yellow="\033[0;34m";
