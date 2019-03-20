@@ -3,7 +3,7 @@
 #
 # Example
 # docker run -d -p 9091:9091 prom/pushgateway
-# docker run --rm -i -e DEBUG=1 -e PROM_PUSHGATEWAY_URL="http://127.0.0.1" -e AWS_ACCESS_KEY_ID="xxx" -e AWS_SECRET_ACCESS_KEY="xxx" -e AWS_BUCKET_NAME="backup.om3.cloud" -e AWS_DEFAULT_REGION="eu-central-1" aoepeople/prometheus-metrics:0.4 /bin/bash -c "/usr/local/bin/aws-s3.sh"
+# docker run --rm -i -e DEBUG=1 -e PROM_PUSHGATEWAY_URL="http://127.0.0.1" -e AWS_ACCESS_KEY_ID="xxx" -e AWS_SECRET_ACCESS_KEY="xxx" -e AWS_BUCKET_NAME="backup.om3.cloud" -e AWS_DEFAULT_REGION="eu-central-1" aoepeople/prometheus-metrics:0.4 /bin/bash -c "/usr/local/bin/aws_s3_objects.sh"
 #
 
 

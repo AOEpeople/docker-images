@@ -90,7 +90,7 @@ docker run --rm -i \
   -e AWS_SECRET_ACCESS_KEY="XXYYZZ" \
   -e AWS_BUCKET_NAME="backup.om3.cloud" \
   -e AWS_DEFAULT_REGION="eu-central-1" \
-  aoepeople/prometheus-metrics:0.1 /bin/bash -c "/usr/local/bin/aws-s3.sh"
+  aoepeople/prometheus-metrics:0.1 /bin/bash -c "/usr/local/bin/aws_s3_objects.sh"
 ```
 
 
