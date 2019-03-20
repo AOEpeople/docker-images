@@ -34,7 +34,6 @@ read -r -d '' OUTPUT << EOM
 curl_time_namelookup{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_namelookup}
 curl_time_connect{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_connect}
 curl_time_appconnect{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_appconnect}
-curl_time_namelookup{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_namelookup}
 curl_time_pretransfer{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_pretransfer}
 curl_time_starttransfer{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_starttransfer}
 curl_time_total{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_total}
