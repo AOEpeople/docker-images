@@ -44,6 +44,7 @@ EOM
 echo "Curl: ${URL}"
 curl --max-time 30 \
     --silent \
+    --header 'Cache-Control: no-cache' \
     --write-out "$OUTPUT\n" --output /dev/null \
     ${URL} > $TMPDIR/$COUNTER.metrics &
 
