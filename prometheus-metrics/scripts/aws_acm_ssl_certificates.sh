@@ -34,7 +34,7 @@ for REGION in ${REGIONS}; do
         HUMAN_READABLE_EXPIRE_DATE=$(date -d @${NO_AFTER})
         EXPIRES_IN_DAYS=$(( ($(date +%s --date "@${NO_AFTER}") - $(date +%s)) / (3600*24) ))
         IDENTIFIER=$(echo -n "${ARN}" | md5sum | awk '{print $1}') || error_exit "Failed to generate identifier"
-        #echo_yellow "Certification of domain \"${DOMAIN}\" expires in ${EXPIRES_IN_DAYS} days (${HUMAN_READABLE_EXPIRE_DATE})"
+        echo_yellow "Certification of domain \"${DOMAIN}\" expires in ${EXPIRES_IN_DAYS} days (${HUMAN_READABLE_EXPIRE_DATE})"
         echo -e "aws_acm_ssl_certificate_expiration{domain=\"${DOMAIN}\", region=\"${REGION}\", renewal_eligibility=\"${RENEWAL_ELIGIBILITY}\", arn=\"${ARN}\"} ${EXPIRES_IN_DAYS}" >> $TMPDIR/metrics.txt
     done
 
