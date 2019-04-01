@@ -37,7 +37,7 @@ docker run -d -p 9091:9091 --name prom_pushgateway prom/pushgateway
 export PROM_PUSHGATEWAY_HOST=$(docker exec $(docker ps -f name=prom_pushgateway --format "{{.ID}}") hostname -i)
 export AWS_PROFILE=om3-lhr-prod
 export AWS_DEFAULT_REGION=$(aws configure get region --profile ${AWS_PROFILE})
-docker run --rm -i -v $(PWD):/app -v $HOME/.aws:/root/.aws -w /app -e AWS_PROFILE="${AWS_PROFILE}" -e AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}" -e PROM_PUSHGATEWAY_URL="http://${PROM_PUSHGATEWAY_HOST}" aoepeople/k8s_tools /bin/bash -c "/app/scripts/check_acm_certificates.sh"
+docker run --rm -i -v $(PWD):/app -v $HOME/.aws:/root/.aws -w /app -e AWS_PROFILE="${AWS_PROFILE}" -e AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}" -e PROM_PUSHGATEWAY_URL="http://${PROM_PUSHGATEWAY_HOST}" aoepeople/k8s_tools /bin/bash -c "/app/scripts/aws_acm_ssl_certificates.sh"
 
 ```
 
