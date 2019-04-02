@@ -10,3 +10,4 @@ build:
 push: build
 	docker push ${REPO}:${VERSION}
 	docker push ${REPO}:latest
+	echo "${VERSION}" > version.txt
