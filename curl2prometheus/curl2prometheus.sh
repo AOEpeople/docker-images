@@ -29,6 +29,12 @@ if [ ! -z "${ADDITIONAL_ATTRIBUTES}" ] ; then
     ADDITIONAL_ATTRIBUTES="${ADDITIONAL_ATTRIBUTES},"
 fi
 
+if [ ! -z "${GLOBAL_ATTRIBUTES}" ] ; then
+    GLOBAL_ATTRIBUTES=${GLOBAL_ATTRIBUTES%,}
+    GLOBAL_ATTRIBUTES=${GLOBAL_ATTRIBUTES#,}
+    GLOBAL_ATTRIBUTES="${GLOBAL_ATTRIBUTES},"
+fi
+
 if [ ! -z "${AUTH_HEADER_VALUE}" ] ; then
     if [ -z "${AUTH_HEADER_NAME}" ] ; then
         AUTH_HEADER_NAME="Authorization"
@@ -38,15 +44,17 @@ else
     AUTH_HEADER=""
 fi
 
+ATTRIBUTES="${GLOBAL_ATTRIBUTES}${ADDITIONAL_ATTRIBUTES}url=\"${URL}\""
+
 # Output format
 read -r -d '' OUTPUT << EOM
-curl_time_namelookup{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_namelookup}
-curl_time_connect{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_connect}
-curl_time_appconnect{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_appconnect}
-curl_time_pretransfer{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_pretransfer}
-curl_time_starttransfer{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_starttransfer}
-curl_time_total{${ADDITIONAL_ATTRIBUTES}url="${URL}",code="%{http_code}"} %{time_total}
-curl_http_code{${ADDITIONAL_ATTRIBUTES}url="${URL}"} %{http_code}
+curl_time_namelookup{${ATTRIBUTES},code="%{http_code}"} %{time_namelookup}
+curl_time_connect{${ATTRIBUTES},code="%{http_code}"} %{time_connect}
+curl_time_appconnect{${ATTRIBUTES},code="%{http_code}"} %{time_appconnect}
+curl_time_pretransfer{${ATTRIBUTES},code="%{http_code}"} %{time_pretransfer}
+curl_time_starttransfer{${ATTRIBUTES},code="%{http_code}"} %{time_starttransfer}
+curl_time_total{${ATTRIBUTES},code="%{http_code}"} %{time_total}
+curl_http_code{${ATTRIBUTES}} %{http_code}
 EOM
 
 # do the curl call
