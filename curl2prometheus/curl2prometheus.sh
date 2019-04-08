@@ -64,12 +64,10 @@ curl --max-time 30 \
     --header 'Cache-Control: no-cache' \
     --header "${AUTH_HEADER}" \
     --write-out "$OUTPUT\n" --output /dev/null \
-    ${URL} > $TMPDIR/$COUNTER.metrics &
+    ${URL} > $TMPDIR/$COUNTER.metrics
 
 let COUNTER++
 done
-
-wait
 
 # debug output
 echo "Metrics:"
