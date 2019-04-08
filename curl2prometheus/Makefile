@@ -5,7 +5,6 @@ VERSION=$(shell git describe --tags --always --dirty --abbrev=3)
 build: Dockerfile
 	docker build -t aoepeople/curl2prometheus:${VERSION} .
 	docker tag aoepeople/curl2prometheus:${VERSION} aoepeople/curl2prometheus:latest
-	echo "${VERSION}" > version.txt
 
 push: build
 	docker push aoepeople/curl2prometheus:${VERSION}
