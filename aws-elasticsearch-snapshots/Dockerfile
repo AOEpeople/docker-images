@@ -9,7 +9,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     aws --version && \
     chmod +x /usr/local/bin/*
 
-RUN pip install boto3 requests requests_aws4auth
+RUN pip install boto3 requests requests_aws4auth botocore
 
 COPY ./scripts/* /
 

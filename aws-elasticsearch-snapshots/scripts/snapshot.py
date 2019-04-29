@@ -1,4 +1,5 @@
 import boto3
+import botocore.session
 import requests
 import os
 import sys
@@ -14,11 +15,20 @@ region = os.getenv('REGION', 'us-west-1')
 
 host = 'https://' + esHost + '/'
 service = 'es'
+
 try:
-    credentials = boto3.Session().get_credentials()
-    awsAuth = AWS4Auth(credentials.access_key, credentials.secret_key, region, service, session_token=credentials.token)
-except AttributeError:
+    session = botocore.session.get_session()
+    credentials = session.get_credentials()
+except:
     print("Unable to get AWS credentials")
+    print(sys.exc_info()[0])
+    exit(1)
+
+try:
+    awsAuth = AWS4Auth(credentials.access_key, credentials.secret_key, region, service, session_token=credentials.token)
+except AttributeError as err:
+    print("Unable to auth with AWS credentials")
+    print(str(err), file=sys.stderr)
     exit(1)
 
 path = '_snapshot/' + bucketName
