@@ -7,7 +7,7 @@ if [ -z "$URLS" ] ; then echo "No URLS given"; exit 1; fi
 if [ -z "$PUSH_DESTINATION" ] ; then echo "No PUSH_DESTINATION given"; exit 1; fi
 
 TMPDIR=$(mktemp -d)
-trap "rm -rf ${TMPDIR}" EXIT
+trap 'rm -rf "${TMPDIR}"' EXIT
 
 COUNTER=0
 
@@ -18,7 +18,7 @@ if [[ "$DEFINITION" != http* ]] ; then
     continue
 fi
 
-IFS='|' read -a PIECES <<< "${DEFINITION}"
+IFS='|' read -r -a PIECES <<< "${DEFINITION}"
 URL=${PIECES[0]}
 
 # parse additional attributes
@@ -63,17 +63,17 @@ curl --max-time 30 \
     --silent \
     --header 'Cache-Control: no-cache' \
     --header "${AUTH_HEADER}" \
-    --write-out "$OUTPUT\n" --output /dev/null \
-    ${URL} > $TMPDIR/$COUNTER.metrics
+    --write-out "$OUTPUT\\n" --output /dev/null \
+    "${URL}" > "$TMPDIR/$COUNTER.metrics"
 
-let COUNTER++
+(( COUNTER++ ))
 done
 
 # debug output
 echo "Metrics:"
-cat $TMPDIR/*.metrics
+cat "$TMPDIR"/*.metrics
 
 # push all metrics to push gateway
 echo ""
 echo "Pushing metrics to $PUSH_DESTINATION"
-cat $TMPDIR/*.metrics | curl --data-binary @- "$PUSH_DESTINATION"
+cat "$TMPDIR"/*.metrics | curl --data-binary @- "$PUSH_DESTINATION"
