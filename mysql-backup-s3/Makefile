@@ -1,6 +1,6 @@
-VERSION=1.0.3
+VERSION=1.0.12
 
-.PHONY: docker
+.PHONY: build push
 
 build: Dockerfile
 	docker build -t aoepeople/mysql-backup-s3:${VERSION} .

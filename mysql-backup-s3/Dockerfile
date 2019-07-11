@@ -1,9 +1,10 @@
-FROM debian:jessie
+FROM ubuntu:18.10
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install --no-install-recommends -y python-pip mysql-client && \
+    apt-get install --no-install-recommends -y python-pip mysql-client postgresql-client && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
+    pip install --upgrade setuptools && \
     pip install awscli && \
     rm -rf /tmp/pip_build_root && \
     aws --version

@@ -6,8 +6,9 @@ Required environment variables:
 - AWS_SECRET_ACCESS_KEY
 - AWS_DEFAULT_REGION
 - S3_BUCKET
-- S3_PREFIX
+- S3_KEY
 - DBHOST
 - DBNAME
 - DBUSER
 - DBPASSWORD
+- DBENGINE ("mysql" or "postgres")
