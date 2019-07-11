@@ -1,9 +1,13 @@
-.PHONY: docker
+VERSION=0.3
+REPO=aoepeople/basics
 
-build: Dockerfile
-	docker build -t aoepeople/basics:0.2 .
-	docker tag aoepeople/basics:0.1 aoepeople/basics:latest
+.PHONY: build push
+
+build:
+	# docker build -t "${REPO}:${VERSION}" .
+	docker build --no-cache -t "${REPO}:${VERSION}" .
+	docker tag ${REPO}:${VERSION} ${REPO}:latest
 
 push: build
-	docker push aoepeople/basics:0.2
-	docker push aoepeople/basics:latest
+	docker push ${REPO}:${VERSION}
+	docker push ${REPO}:latest
