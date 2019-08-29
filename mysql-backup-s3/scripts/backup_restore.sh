@@ -1,4 +1,7 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
 
 SOURCE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -28,6 +31,11 @@ echo "Importing dump"
 
 if [[ "${DBENGINE}" = "mysql" ]] ; then
 
+    # required for sed
+    export LANG=C
+    export LC_CTYPE=C
+    export LC_ALL=C
+
     echo "Starting MySQL import"
 
     echo "Dropping all tables first"
@@ -36,7 +44,9 @@ if [[ "${DBENGINE}" = "mysql" ]] ; then
     echo "Unzipping dump.sql.gz..."
     echo "SET FOREIGN_KEY_CHECKS=0;" > /tmp/dump.sql
     gunzip -c /tmp/dump.sql.gz \
-        | LANG=C LC_CTYPE=C LC_ALL=C sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' \
+        | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' \
+        | sed -e 's/DEFINER[ ]*=[ ]*[^*]*PROCEDURE/PROCEDURE/' \
+        | sed -e 's/DEFINER[ ]*=[ ]*[^*]*FUNCTION/FUNCTION/' \
         | fgrep -v GLOBAL.GTID_PURGED \
         | fgrep -v SESSION.SQL_LOG_BIN >> /tmp/dump.sql
     echo "SET FOREIGN_KEY_CHECKS=1;" >> /tmp/dump.sql

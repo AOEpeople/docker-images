@@ -1,4 +1,7 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
 
 function echoerr { echo "============================================" 1>&2; echo "ERROR: $*" 1>&2;  echo "============================================" 1>&2; }
 function error_exit { echoerr "$1"; exit 1; }
