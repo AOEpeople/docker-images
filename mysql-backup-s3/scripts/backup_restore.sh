@@ -54,7 +54,7 @@ if [[ "${DBENGINE}" = "mysql" ]] ; then
         | fgrep -v SESSION.SQL_LOG_BIN >> /tmp/dump.sql
     echo "SET FOREIGN_KEY_CHECKS=1;" >> /tmp/dump.sql
 
-    mysql -u${DBUSER} -p${DBPASSWORD} -h${DBHOST} ${DBNAME} < /tmp/dump.sql || error_exit "Failed importing database dump"
+    mysql -v -u${DBUSER} -p${DBPASSWORD} -h${DBHOST} ${DBNAME} < /tmp/dump.sql || error_exit "Failed importing database dump"
 
 elif [[ "${DBENGINE}" = "postgres" ]] ; then
 
