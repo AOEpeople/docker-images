@@ -17,8 +17,8 @@ if [ -z "${S3_KEY}" ] ; then error_exit "S3_KEY not set"; fi
 if [ -z "${DBENGINE}" ] ; then error_exit "DBENGINE not set (mysql or postgres)"; fi
 
 # Hotfix
-if [ -n "${NAMESPACE}" ] ; then S3_KEY=$(echo ${S3_KEY} | sed "s/###NAMESPACE###/${NAMESPACE}/g"); fi
-if [ -n "${CLUSTER_NAME}" ] ; then S3_KEY=$(echo ${S3_KEY} | sed "s/###CLUSTER_NAME###/${CLUSTER_NAME}/g"); fi
+if [ -n "${NAMESPACE:-}" ] ; then S3_KEY=$(echo ${S3_KEY} | sed "s/###NAMESPACE###/${NAMESPACE:-}/g"); fi
+if [ -n "${CLUSTER_NAME:-}" ] ; then S3_KEY=$(echo ${S3_KEY} | sed "s/###CLUSTER_NAME###/${CLUSTER_NAME:-}/g"); fi
 
 echo "Importing s3://${S3_BUCKET}${S3_KEY} to ${DBUSER}:*****@${DBHOST}/${DBNAME} (${DBENGINE})"
 
