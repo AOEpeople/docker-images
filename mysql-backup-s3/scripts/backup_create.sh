@@ -27,6 +27,7 @@ if [ "${DBENGINE}" == "mysql" ] ; then
     export LC_ALL=C
 
     mysqldump \
+       --verbose \
        --routines \
        --single-transaction --quick \
        --set-gtid-purged=OFF \
