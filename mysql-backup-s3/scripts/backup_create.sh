@@ -18,6 +18,8 @@ if [ -z "${DBENGINE}" ] ; then error_exit "DBENGINE not set (mysql or postgres)"
 if [ -n "${NAMESPACE:-}" ] ; then S3_KEY=$(echo ${S3_KEY} | sed "s/###NAMESPACE###/${NAMESPACE:-}/g"); fi
 if [ -n "${CLUSTER_NAME:-}" ] ; then S3_KEY=$(echo ${S3_KEY} | sed "s/###CLUSTER_NAME###/${CLUSTER_NAME:-}/g"); fi
 
+filename="dump.`date +%Y%m%d-%H%M`.sql.gz";
+
 echo "Creating ${DBENGINE} dump from ${DBUSER}:*****@${DBHOST}/${DBNAME}"
 if [ "${DBENGINE}" == "mysql" ] ; then
 
@@ -35,7 +37,7 @@ if [ "${DBENGINE}" == "mysql" ] ; then
        | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' \
        | sed -e 's/DEFINER[ ]*=[ ]*[^*]*PROCEDURE/PROCEDURE/' \
        | sed -e 's/DEFINER[ ]*=[ ]*[^*]*FUNCTION/FUNCTION/' \
-       | gzip > /tmp/dump.sql.gz || error_exit "Failed creating database dump"
+       | gzip > "/tmp/${filename}" || error_exit "Failed creating database dump"
 elif [ "${DBENGINE}" == "postgres" ] ; then
     export PGPASSWORD="$DBPASSWORD"
     pg_dump \
@@ -44,15 +46,15 @@ elif [ "${DBENGINE}" == "postgres" ] ; then
         --clean \
         --username=${DBUSER} \
         --host=${DBHOST} \
-        --dbname=${DBNAME} | gzip > /tmp/dump.sql.gz || error_exit "Failed creating database dump"
+        --dbname=${DBNAME} | gzip > "/tmp/${filename}" || error_exit "Failed creating database dump"
 else
     error_exit "DBENGINE ${DBENGINE} is not supported"
 fi
 
 
-FILESIZE=$(stat -c%s "/tmp/dump.sql.gz")
+FILESIZE=$(stat -c%s "/tmp/${filename}")
 
 if [ "$FILESIZE" -lt "1000" ] ; then error_exit "Database dump too small ($FILESIZE)"; fi
 
 echo "Uploading file to s3://${S3_BUCKET}${S3_KEY}"
-aws --region "${AWS_DEFAULT_REGION}" s3 cp /tmp/dump.sql.gz "s3://${S3_BUCKET}${S3_KEY}" || error_exit "Failed uploading dump to S3"
+aws --region "${AWS_DEFAULT_REGION}" s3 cp "/tmp/${filename}" "s3://${S3_BUCKET}${S3_KEY}" --expires "`date -v +7d -u +'%Y-%m-%dT%H:%M:%SZ'`"  || error_exit "Failed uploading dump to S3"
