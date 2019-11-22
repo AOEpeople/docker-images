@@ -57,4 +57,5 @@ FILESIZE=$(stat -c%s "/tmp/${filename}")
 if [ "$FILESIZE" -lt "1000" ] ; then error_exit "Database dump too small ($FILESIZE)"; fi
 
 echo "Uploading file to s3://${S3_BUCKET}${S3_KEY}"
-aws --region "${AWS_DEFAULT_REGION}" s3 cp "/tmp/${filename}" "s3://${S3_BUCKET}${S3_KEY}" --expires "`date -v +7d -u +'%Y-%m-%dT%H:%M:%SZ'`"  || error_exit "Failed uploading dump to S3"
+aws --region "${AWS_DEFAULT_REGION}" s3 cp "/tmp/${filename}" "s3://${S3_BUCKET}${S3_KEY}" || error_exit "Failed uploading dump to S3"
+aws --region "${AWS_DEFAULT_REGION}" s3api put-object-tagging --bucket ${S3_BUCKET} --key ${S3_KEY} --tagging '{"TagSet"{"Key":"one_week_expiration","Value":"true"}]}'
