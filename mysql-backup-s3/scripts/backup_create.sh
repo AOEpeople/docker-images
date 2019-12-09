@@ -18,7 +18,13 @@ if [ -z "${DBENGINE}" ] ; then error_exit "DBENGINE not set (mysql or postgres)"
 if [ -n "${NAMESPACE:-}" ] ; then S3_KEY=$(echo ${S3_KEY} | sed "s/###NAMESPACE###/${NAMESPACE:-}/g"); fi
 if [ -n "${CLUSTER_NAME:-}" ] ; then S3_KEY=$(echo ${S3_KEY} | sed "s/###CLUSTER_NAME###/${CLUSTER_NAME:-}/g"); fi
 
-filename="dump.`date +%Y%m%d-%H%M`.sql.gz";
+if [ -n "${S3_APP_PATH}" ] ; then
+    filename="dump.`date +%Y%m%d-%H%M`.sql.gz";
+    S3_KEY="${S3_APP_PATH}/${filename}"
+else
+    filename="dump.sql.gz";
+fi
+
 
 echo "Creating ${DBENGINE} dump from ${DBUSER}:*****@${DBHOST}/${DBNAME}"
 if [ "${DBENGINE}" == "mysql" ] ; then
