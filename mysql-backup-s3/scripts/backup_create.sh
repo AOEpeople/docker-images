@@ -41,6 +41,7 @@ if [ "${DBENGINE}" == "mysql" ] ; then
     export LC_ALL=C
 
     mysqldump \
+       --max-allowed-packet=8388608 \
        --verbose \
        --routines \
        --single-transaction --quick \
