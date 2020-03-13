@@ -28,6 +28,8 @@ for REGION in ${REGIONS}; do
         ARN=$(_jq '.CertificateArn')
         CERTIFICATION_DATA=$(aws --region "${REGION}" acm describe-certificate --certificate-arn "${ARN}") || error_exit "Failed to get certification data"
         RENEWAL_ELIGIBILITY=$(echo ${CERTIFICATION_DATA} | jq -r '.Certificate.RenewalEligibility')
+        IN_USE=$(echo ${CERTIFICATION_DATA} | jq '.Certificate.InUseBy | length')
+        TYPE=$(echo ${CERTIFICATION_DATA} | jq -r '.Certificate.Type')
 
         # The time after which the certificate is not valid. Type: Timestamp https://docs.aws.amazon.com/acm/latest/APIReference/API_CertificateDetail.html#ACM-Type-CertificateDetail-NotAfter
         NO_AFTER=$(echo ${CERTIFICATION_DATA} | jq -r '.Certificate.NotAfter')
@@ -35,7 +37,7 @@ for REGION in ${REGIONS}; do
         EXPIRES_IN_DAYS=$(( ($(date +%s --date "@${NO_AFTER}") - $(date +%s)) / (3600*24) ))
         IDENTIFIER=$(echo -n "${ARN}" | md5sum | awk '{print $1}') || error_exit "Failed to generate identifier"
         echo_yellow "Certification of domain \"${DOMAIN}\" expires in ${EXPIRES_IN_DAYS} days (${HUMAN_READABLE_EXPIRE_DATE})"
-        echo -e "aws_acm_ssl_certificate_expiration{domain=\"${DOMAIN}\", region=\"${REGION}\", renewal_eligibility=\"${RENEWAL_ELIGIBILITY}\", arn=\"${ARN}\"} ${EXPIRES_IN_DAYS}" >> $TMPDIR/metrics.txt
+        echo -e "aws_acm_ssl_certificate_expiration{domain=\"${DOMAIN}\", region=\"${REGION}\", renewal_eligibility=\"${RENEWAL_ELIGIBILITY}\", arn=\"${ARN}\", in_use=\"${IN_USE}\", type=\"${TYPE}\"} ${EXPIRES_IN_DAYS}" >> $TMPDIR/metrics.txt
     done
 
     ENDPOINT="${PROM_PUSHGATEWAY_URL}:${PROM_PUSHGATEWAY_PORT}/metrics/job/aws_acm_ssl_certificates"
