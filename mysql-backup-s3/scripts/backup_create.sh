@@ -75,5 +75,5 @@ aws --region "${AWS_DEFAULT_REGION}" \
     --bucket "${S3_BUCKET}" \
     --key "${S3_KEY}" \
     --body "/tmp/${filename}" \
-    --tagging '{"TagSet": [{"Key":"one_week_expiration","Value":"true"}]}' \
+    --tagging 'one_week_expiration=true' \
     || error_exit "Failed uploading dump to S3"
