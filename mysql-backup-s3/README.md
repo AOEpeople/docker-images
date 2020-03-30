@@ -1,3 +1,5 @@
+# DEPRECATED: This version is deprecated and should no longer be used
+
 # Create a mysqldump and stores it to S3
 
 Required environment variables:
