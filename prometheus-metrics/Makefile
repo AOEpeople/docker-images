@@ -1,4 +1,4 @@
-VERSION=$(shell git describe --tags --always --dirty --abbrev=3)
+VERSION=0.10.0
 REPO=aoepeople/prometheus-metrics
 
 .PHONY: build push
@@ -10,4 +10,3 @@ build:
 push: build
 	docker push ${REPO}:${VERSION}
 	docker push ${REPO}:latest
-	echo "${VERSION}" > version.txt
