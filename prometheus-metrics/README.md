@@ -6,20 +6,22 @@
 
 ## AWS ACM SSL Certificate Expiration
 
-Job: 
-```
+Job:
+
+```text
 aws_acm_ssl_certificates
 ```
 
-Metrics: 
-```
+Metrics:
+
+```text
 aws_acm_ssl_certificate_expiration{domain="${DOMAIN}", renewal_eligibility="${RENEWAL_ELIGIBILITY}", arn="${ARN}"}
 ```
 
 **Example command within kubernetes cluster:**
 
-```
-vuku k run check-acm-certificates --rm -it \
+```sh
+kubectl --context integration.k28s.clouud -n k28s-infrastructure run check-acm-certificates --rm -it \
     --env PROM_PUSHGATEWAY_URL="http://prometheus-pushgateway.k28s-infrastructure" \
     --env AWS_DEFAULT_REGION="eu-central-1" \
     --image=aoepeople/prometheus-metrics:latest -- /bin/bash -c "/usr/local/bin/check_acm_certificates.sh"
@@ -27,7 +29,7 @@ vuku k run check-acm-certificates --rm -it \
 
 **Example command within localhost:**
 
-```
+```sh
 cd prometheus-metrics/
 docker run -d -p 9091:9091 --name prom_pushgateway prom/pushgateway
 export PROM_PUSHGATEWAY_HOST=$(docker exec $(docker ps -f name=prom_pushgateway --format "{{.ID}}") hostname -i)
@@ -39,7 +41,7 @@ docker run --rm -i -v $(PWD):/app -v $HOME/.aws:/root/.aws -w /app -e AWS_PROFIL
 
 ### Required persmissions
 
-```
+```json
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -56,29 +58,25 @@ docker run --rm -i -v $(PWD):/app -v $HOME/.aws:/root/.aws -w /app -e AWS_PROFIL
 }
 ```
 
-
-
-
-
-
-
 ## AWS S3 Metrics
 
-Job: 
-```
+Job:
+
+```text
 aws_s3_objects
 ```
 
-Metrics: 
-```
+Metrics:
+
+```text
 aws_s3_object_key_age{bucket="<AWS_BUCKET_NAME>", key="<KEY>", last_modified="<LAST_MODIFIED>"} <AGE_IN_SECONDS>
 aws_s3_object_key_size{bucket="<AWS_BUCKET_NAME>", key="<KEY>", last_modified="<LAST_MODIFIED>"} <OBJECT_SIZE_IN_BYTES>
 ```
 
 **Example command within kubernetes cluster:**
 
-```
-vuku k run check-s3-objects --rm -it \
+```sh
+kubectl --context integration.k28s.clouud -n k28s-infrastructure run check-s3-objects --rm -it \
     --env PROM_PUSHGATEWAY_URL="http://prometheus-pushgateway.k28s-infrastructure" \
     --env AWS_ACCESS_KEY_ID="OM3_META_ACCESS_KEY_ID" \
     --env AWS_SECRET_ACCESS_KEY="OM3_META_SECRET_ACCESS_KEY" \
@@ -90,7 +88,7 @@ vuku k run check-s3-objects --rm -it \
 
 **Example command within localhost:**
 
-```
+```sh
 cd prometheus-metrics/
 docker run -d -p 9091:9091 --name prom_pushgateway prom/pushgateway
 export PROM_PUSHGATEWAY_HOST=$(docker exec $(docker ps -f name=prom_pushgateway --format "{{.ID}}") hostname -i)
@@ -100,10 +98,9 @@ docker run --rm -i -v $(PWD):/app -v $HOME/.aws:/root/.aws -w /app -e AWS_BUCKET
 
 ```
 
-
 ### Required persmissions
 
-```
+```json
 {
   "Version": "2012-10-17",
   "Statement": [
