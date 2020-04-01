@@ -30,14 +30,20 @@ for REGION in ${REGIONS}; do
         RENEWAL_ELIGIBILITY=$(echo ${CERTIFICATION_DATA} | jq -r '.Certificate.RenewalEligibility')
         IN_USE=$(echo ${CERTIFICATION_DATA} | jq '.Certificate.InUseBy | length')
         TYPE=$(echo ${CERTIFICATION_DATA} | jq -r '.Certificate.Type')
+        DOMAIN_NAMES=$(echo ${CERTIFICATION_DATA} | jq '.Certificate.DomainValidationOptions[].DomainName' -r | paste -s -d" ")
+        VALIDATION_METHODS=$(echo ${CERTIFICATION_DATA} | jq '.Certificate.DomainValidationOptions[].ValidationMethod' -r | paste -s -d" ")
 
         # The time after which the certificate is not valid. Type: Timestamp https://docs.aws.amazon.com/acm/latest/APIReference/API_CertificateDetail.html#ACM-Type-CertificateDetail-NotAfter
         NO_AFTER=$(echo ${CERTIFICATION_DATA} | jq -r '.Certificate.NotAfter')
         HUMAN_READABLE_EXPIRE_DATE=$(date -d @${NO_AFTER})
         EXPIRES_IN_DAYS=$(( ($(date +%s --date "@${NO_AFTER}") - $(date +%s)) / (3600*24) ))
-        IDENTIFIER=$(echo -n "${ARN}" | md5sum | awk '{print $1}') || error_exit "Failed to generate identifier"
         echo_yellow "Certification of domain \"${DOMAIN}\" expires in ${EXPIRES_IN_DAYS} days (${HUMAN_READABLE_EXPIRE_DATE})"
-        echo -e "aws_acm_ssl_certificate_expiration{domain=\"${DOMAIN}\", region=\"${REGION}\", renewal_eligibility=\"${RENEWAL_ELIGIBILITY}\", arn=\"${ARN}\", in_use=\"${IN_USE}\", type=\"${TYPE}\"} ${EXPIRES_IN_DAYS}" >> $TMPDIR/metrics.txt
+
+        if [[ $TYPE == "IMPORTED" ]]; then
+            echo -e "aws_acm_ssl_certificate_expiration{domain=\"${DOMAIN}\", region=\"${REGION}\", renewal_eligibility=\"${RENEWAL_ELIGIBILITY}\", arn=\"${ARN}\", in_use=\"${IN_USE}\", type=\"${TYPE}\", domain_names=\"${DOMAIN_NAMES}\"} ${EXPIRES_IN_DAYS}" >> $TMPDIR/metrics.txt
+        else
+            echo -e "aws_acm_ssl_certificate_expiration{domain=\"${DOMAIN}\", region=\"${REGION}\", renewal_eligibility=\"${RENEWAL_ELIGIBILITY}\", arn=\"${ARN}\", in_use=\"${IN_USE}\", type=\"${TYPE}\", domain_names=\"${DOMAIN_NAMES}\", validation_methods=\"${VALIDATION_METHODS}\"} ${EXPIRES_IN_DAYS}" >> $TMPDIR/metrics.txt
+        fi
     done
 
     ENDPOINT="${PROM_PUSHGATEWAY_URL}:${PROM_PUSHGATEWAY_PORT}/metrics/job/aws_acm_ssl_certificates"
